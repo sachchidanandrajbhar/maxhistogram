@@ -137,16 +137,133 @@ public class LinkedList {
         head=prev;
 
      }
-    public static void main(String[] args) {
-        LinkedList ll = new LinkedList();
-        ll.addFirst(2);
-        ll.addFirst(1);
-        ll.addLast(3);
-        ll.addLast(4);
-        ll.print();
-        ll.reverse();
-        ll.print();
+     public void deleteFromEnd(int n){
+        //calculate size
+        int sz=0;
+        Node temp=head;
+        while (temp != null) {
+            temp=temp.next;
+            sz++;
+            
+        }
+        if(n==sz){
+            head=head.next;
+            return;
+        }
+        //si-n
+        int i=1;
+        int idx=sz-n;
+        Node prev=head;
+        while(i<idx){
+            prev=prev.next;
+            i++;
+        }
+        prev.next=prev.next.next;
+        return;
+     }
+     //slow-fast apporch
+     public Node findMidNode(Node head){
+        Node slow=head;
+        Node fast=head;
+        while (fast != null && fast.next != null) {
+            fast=fast.next.next;
+            slow=slow.next;   
+        }
+        return slow;
+     }
+     //check palindrome
+     public boolean checkPalidrome(){
+        //base case
+        if(head == null || head.next==null){
+            return true;
+        }
+        //find mid
+        Node mid = findMidNode(head);
+        //reverse half
+        Node prev=null;
+        Node curr=mid;
+        Node next;
+        while(curr != null){
+            next=curr.next;
+            curr.next=prev;
+            prev=curr;
+            curr=next;
+        }
+        //check data
+        Node left=head;
+        Node right=prev;
+        while(right != null){
+            if(left.data != right.data){
+                return false;
+            }
+            left=left.next;
+            right=right.next;
+        }
+        return true;
+     }
+     public static boolean isCycle(){
+        Node slow=head;
+        Node fast=head;
+        while(fast != null && fast.next !=null){
+            slow=slow.next;
+            fast=fast.next.next;
+            if(slow==fast){
+                return true;
+            }
+        }
+        return false;
+     }
+    // public static void main(String[] args) {
+    //     LinkedList ll = new LinkedList();
+        
+    //     ll.addLast(1);
+    //     ll.addLast(5);       
+    //     ll.addLast(5);
+    //     ll.addLast(1);
+    //     ll.print();
+    //     System.out.print(ll.checkPalidrome());;
+    //}
+    public static void removeCycle(){
+        //detect cycle
+        Node fast=head;
+        Node slow=head;
+        boolean cycle=false;
+        while(fast != null && fast.next != null){
+            slow=slow.next;
+            fast=fast.next.next;
+            
+            if(fast==slow){
+                cycle= true;
+                break;
+            }
+        }
+          if(cycle==false){
+             return;
+           }
+         
+        //find meeting point
+        slow=head;
+        Node prev=null;
+        while(fast != slow){
+            prev=fast;
+            slow=slow.next;
+            fast=fast.next;
+        }
+        //remove cycle
+        prev.next=null;
 
+    }
+    public static void main(String args[]){
+        head= new Node(1);
+        Node temp = new Node(4);
+        head.next= temp;
+        
+        head.next.next= new Node(3);
+        head.next.next.next= temp;
+        System.out.println(isCycle());
+        removeCycle();
+         System.out.print(isCycle());
 
+        
     }
 }
